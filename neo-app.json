@@ -1,0 +1,82 @@
+{
+  "routes": [
+    {
+      "path": "/resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/resources",
+        "version": "1.38.37"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/test-resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/test-resources",
+        "version": "1.38.37"
+      },
+      "description": "SAPUI5 Test Resources"
+    },
+    {
+      "path": "/resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/resources",
+        "version": "1.38.37"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/test-resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/test-resources",
+        "version": "1.38.37"
+      },
+      "description": "SAPUI5 Test Resources"
+    },
+    {
+      "path": "/sap/bc/ui5_ui5",
+      "target": {
+        "type": "destination",
+        "name": "GD1",
+        "entryPath": "/sap/bc/ui5_ui5"
+      },
+      "description": "SAP Gateway"
+    },
+    {
+      "path": "/sap/opu/odata",
+      "target": {
+        "type": "destination",
+        "name": "GD1",
+        "entryPath": "/sap/opu/odata"
+      },
+      "description": "SAP Gateway"
+    },
+    {
+      "path": "/resources/factsheet/req/customer/codan",
+      "target": {
+        "type": "destination",
+        "name": "GD1",
+        "entryPath": "/sap/bc/ui5_ui5/sap/z_cus_req_fact",
+        "preferLocal": true
+      },
+      "description": "factsheet/req/customer/codan Reuse Library"
+    },
+    {
+      "path": "/resources/codan/z_ie11_polyfill",
+      "target": {
+        "type": "destination",
+        "name": "GD1",
+        "entryPath": "/sap/bc/ui5_ui5/sap/z_ie11_polyfill",
+        "preferLocal": true
+      },
+      "description": "codan/z_ie11_polyfill Reuse Library"
+    }
+  ]
+}

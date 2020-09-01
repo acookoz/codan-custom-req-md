@@ -1,0 +1,120 @@
+<mvc:View controllerName="approve.req.customer.codan.controller.Detail" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic"
+	xmlns:footerbar="sap.ushell.ui.footerbar" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core"
+	xmlns:codan="approve.req.customer.codan.control">
+	<semantic:DetailPage id="detailPage" navButtonPress="onNavBack" showNavButton="{device>/system/phone}" title="{i18n>detailTitle}"
+		busy="{detailView>/busy}" busyIndicatorDelay="{detailView>/delay}">
+		<semantic:content>
+			<ObjectHeader id="objectHeader" title="{name1}" number="Customer ID: {customerId}">
+				<attributes>
+					<ObjectAttribute id="abnAttribute" text="ABN/Tax Number: {abn}"/>
+					<ObjectAttribute id="companyCodeAttribute" text="Company Code: {companyCode} ({companyCodeText})"/>
+				</attributes>
+			</ObjectHeader>
+			<IconTabBar id="iconTabBar"
+				class="sapUiResponsiveContentPadding"
+				expandable="false"
+				expanded="true"
+				selectedKey="{detailView>/selectedTab}">
+				<items>
+					<IconTabFilter id="iconTabBarFilter1" key="tab1" icon="sap-icon://hint" tooltip="{i18n>detailIconTabBarInfo}">
+						<Panel id="detailIconPanel">
+							<HBox width="100%">
+								<VBox width="100%">
+									<l:BlockLayout>
+										<l:BlockLayoutRow scrollable="false">
+											<l:BlockLayoutCell>
+												<codan:ListItemWithColorIcon visible="{= !${existingCustomer} }" title="New Customer" icon="sap-icon://alert"
+													infoState="Error" iconInset="false"/>
+												<codan:ListItemWithColorIcon visible="{existingCustomer}" id="companyListItem" title="Companies"
+													description="{= ${companyChangeFlag} ? 'Change Requested' : 'No Change Requested' }"
+													icon="{= ${companyChangeFlag} ? 'sap-icon://sys-enter' : 'sap-icon://sys-cancel' }"
+													infoState="{= ${companyChangeFlag} ? 'Success' : 'Error' }" iconInset="false"/>
+												<codan:ListItemWithColorIcon visible="{existingCustomer}" id="contactListItem" title="Contact Details"
+													description="{= ${contactDetailChangeFlag} ? 'Change Requested' : 'No Change Requested' }"
+													icon="{= ${contactDetailChangeFlag} ? 'sap-icon://sys-enter' : 'sap-icon://sys-cancel' }"
+													infoState="{= ${contactDetailChangeFlag} ? 'Success' : 'Error' }" iconInset="false"/>
+												<codan:ListItemWithColorIcon visible="{existingCustomer}" id="addressListItem" title="Address"
+													description="{= ${addressChangeFlag} ? 'Change Requested' : 'No Change Requested' }"
+													icon="{= ${addressChangeFlag} ? 'sap-icon://sys-enter' : 'sap-icon://sys-cancel' }"
+													infoState="{= ${addressChangeFlag} ? 'Success' : 'Error' }" iconInset="false"/>
+												<codan:ListItemWithColorIcon visible="{existingCustomer}" id="salesListItem" title="Other Details"
+													description="{= ${salesDataChangeFlag} ? 'Change Requested' : 'No Change Requested' }"
+													icon="{= ${salesDataChangeFlag} ? 'sap-icon://sys-enter' : 'sap-icon://sys-cancel' }"
+													infoState="{= ${salesDataChangeFlag} ? 'Success' : 'Error' }" iconInset="false"/>
+											</l:BlockLayoutCell>
+										</l:BlockLayoutRow>
+									</l:BlockLayout>
+								</VBox>
+							</HBox>
+						</Panel>
+						<Panel>
+							<Link text="{i18n>txtLinkDisplayRequest}" press="navigateToReq" visible="{detailView>/approveMode}"/>
+							<Link text="{i18n>txtLinkEditRequest}" press="navigateToReq" visible="{= !${detailView>/approveMode} }"/>
+						</Panel>
+					</IconTabFilter>
+					<IconTabFilter id="iconTabRequest" key="tabFactSheet" icon="sap-icon://request" 
+								   tooltip="Request">
+						<core:ComponentContainer id="componentFactSheet"/>
+					</IconTabFilter>
+			
+					<IconTabFilter id="iconTabApprovals" key="tab3" icon="sap-icon://person-placeholder" 
+								   iconColor="{= ${status} === 'A' ? 'Positive' : 'Negative' }" tooltip="Approvals">
+						<List id="approvalsList" showSeparators="All" inset="true" items="{ToApprovals}">
+							<StandardListItem id="approvalListItems" title="{stepDescription}" 
+											  icon="{ parts:[{path:'approvalResult'}], formatter: '.formatter.formatApprovalIcon' }"
+											  iconInset="false"
+											  infoState="{= ${approverName} ? 'Success' : 'None' }"	
+											  description="{= ${approverName} ? ${approverName} : ${approvalResultText} }"/>
+						</List>
+					</IconTabFilter>
+			
+					<IconTabFilter id="iconTabAttachment" key="tab2" icon="sap-icon://attachment" tooltip="{i18n>detailIconTabBarAttachments}" 
+									count="{attachmentCount}">
+						<List id="attachmentsList" showSeparators="None" inset="true" items="{ToAttachments}" noDataText="{i18n>txtNoAttachments}">
+							<StandardListItem id="attachmentListItems"
+								title="{description}"
+								icon="{parts:[{path:'mimeType'}], formatter:'sap.ui.core.IconPool.getIconForMimeType'}"
+								iconInset="false"
+								description="{parts:[{path:'fileSize'}], formatter: 'approve.req.customer.codan.model.formatter.formatAttachmentSize'}"
+								press="downloadAttachment"
+								type="Active"/>
+						</List>
+					</IconTabFilter>
+				</items>
+			</IconTabBar>
+		</semantic:content>
+		<semantic:messagesIndicator>
+			<semantic:MessagesIndicator
+				id="messagesIndicator"
+				visible="{
+					parts: ['detailView>/approveMode', 'status', 'detailView>/selectedTab'],
+					formatter: '.formatter.editButtonsVisible'
+				}"
+				press="displayMessagesPopover"/>
+		</semantic:messagesIndicator>
+		<semantic:saveAction>
+			<semantic:SaveAction
+				press="onPressSave"
+				visible="{
+					parts: ['detailView>/approveMode', 'status', 'detailView>/selectedTab'],
+					formatter: '.formatter.editButtonsVisible'
+				}"/>
+		</semantic:saveAction>
+		<semantic:customFooterContent>
+			<Button
+				text="{i18n>btnSubmit}"
+				press="onPressSubmit"
+				type="Emphasized"
+				visible="{
+					parts: ['detailView>/approveMode', 'status', 'detailView>/selectedTab'],
+					formatter: '.formatter.editButtonsVisible'
+				}"/>
+		</semantic:customFooterContent>
+		<semantic:positiveAction>
+			<semantic:PositiveAction id="btnApprove" text="Approve" press="onApprove" visible="{detailView>/approveMode}"/>
+		</semantic:positiveAction>
+		<semantic:negativeAction>
+			<semantic:NegativeAction id="btnReject" text="Reject" press="onReject" visible="{detailView>/approveMode}"/>
+		</semantic:negativeAction>
+	</semantic:DetailPage>
+</mvc:View>
